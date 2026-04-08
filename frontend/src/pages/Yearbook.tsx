@@ -177,25 +177,8 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
             
             {/* Header Info */}
             <header className="border-b border-white/5 pb-8">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2 text-glow">{student.name}</h2>
-                  <p className="text-primary font-bold tracking-[0.2em] text-sm uppercase">{student.department}</p>
-                </div>
-                
-                <div className="flex gap-3">
-                  {student.instagram && (
-                    <a href={`https://instagram.com/${student.instagram}`} target="_blank" className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-white transition-all duration-300">
-                      <Instagram size={20} />
-                    </a>
-                  )}
-                  {student.linkedin && (
-                    <a href={student.linkedin} target="_blank" className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-white transition-all duration-300">
-                      <Linkedin size={20} />
-                    </a>
-                  )}
-                </div>
-              </div>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2 text-glow">{student.name}</h2>
+              <p className="text-primary font-bold tracking-[0.2em] text-sm uppercase">{student.department}</p>
             </header>
             
             {/* Bio Section */}
@@ -217,6 +200,20 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
                 </span>
               ))}
             </section>
+
+            {/* Social Links */}
+            <div className="flex gap-3 pt-6 border-t border-white/5">
+              {student.instagram && (
+                <a href={`https://instagram.com/${student.instagram}`} target="_blank" className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-white transition-all duration-300">
+                  <Instagram size={20} />
+                </a>
+              )}
+              {student.linkedin && (
+                <a href={student.linkedin} target="_blank" className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-white transition-all duration-300">
+                  <Linkedin size={20} />
+                </a>
+              )}
+            </div>
 
 
           </div>
