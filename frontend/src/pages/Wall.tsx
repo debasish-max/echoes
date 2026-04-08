@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Heart, MessageSquare, Loader2 } from 'lucide-react';
+import { Send, Heart, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
+import { useUser, useAuth } from '@clerk/clerk-react';
 
 interface WallMsg {
   _id: string;
@@ -14,6 +15,10 @@ export default function Wall() {
   const [loading, setLoading] = useState(true);
   const [newMessage, setNewMessage] = useState('');
   const [posting, setPosting] = useState(false);
+
+  const { user } = useUser();
+  const { getToken } = useAuth();
+  const isAdmin = user?.publicMetadata?.role === 'admin';
 
   const fetchMessages = async () => {
     try {
@@ -36,7 +41,10 @@ export default function Wall() {
 
     setPosting(true);
     try {
-      const { data } = await api.post('/wall', { text: newMessage });
+      const token = await getToken();
+      const { data } = await api.post('/wall', { text: newMessage }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setMessages([data, ...messages]);
       setNewMessage('');
     } catch (error) {
@@ -58,8 +66,9 @@ export default function Wall() {
       </motion.div>
 
       {/* Message Input */}
-      <motion.form 
-        onSubmit={handlePost}
+      {isAdmin && (
+        <motion.form 
+          onSubmit={handlePost}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -84,83 +93,94 @@ export default function Wall() {
             {posting ? <Loader2 className="animate-spin" size={16} /> : 'Post Anonymously'} <Send size={16} />
           </button>
         </div>
-      </motion.form>
+        </motion.form>
+      )}
 
       {/* Messages Grid */}
-      <div className="space-y-6">
-        {loading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-primary" size={32} />
-          </div>
-        ) : (
-          <AnimatePresence mode="popLayout">
-           {messages.map((msg, index) => (
-  <motion.div
+     {/* Messages Grid - 4 column sticky note layout */}
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+  <AnimatePresence mode="popLayout">
+    {messages.map((msg, index) => {
+      const rotations = [-1.2, 0.8, -0.5, 1, 0.7, -1, 0.4, -0.9];
+      const rot = rotations[index % rotations.length];
+      return (
+        <motion.div
   layout
   key={msg._id}
-  initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-  animate={{ opacity: 1, x: 0 }}
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
   exit={{ opacity: 0, scale: 0.95 }}
   transition={{ duration: 0.4 }}
-  style={{ transform: `rotate(${index % 2 === 0 ? '-0.8deg' : '0.6deg'})` }}
-  className="relative group"
+  className="relative pt-5"
 >
+  {/* Tape */}
   <div
-    className="relative p-8 pt-10"
+    className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
     style={{
-      background: '#1a1a1a',
-      boxShadow: '6px 6px 0px #facc15',
-      border: '1px solid rgba(250,204,21,0.2)',
-      borderRadius: '4px',
+      width: '36px', height: '18px',
+      background: '#facc15',
+      border: '1px solid rgba(250,204,21,0.45)',
+      borderRadius: '2px',
     }}
-  >
-    {/* Opening quote */}
-    <span
-      className="absolute top-2 left-4 font-serif text-4xl leading-none"
-      style={{ color: '#facc15', opacity: 0.8 }}
-    >
-      &ldquo;
-    </span>
+  />
 
-    <p
-      className="text-xl md:text-2xl leading-relaxed mb-6 italic text-white/90"
-      style={{ fontFamily: 'Georgia, serif' }}
-    >
-      {msg.text}
-    </p>
+  {/* Stacked paper layers */}
+  <div className="relative">
+    {/* Back shadow layers */}
+    <div className="absolute"
+      style={{ bottom: '-7px', left: '-5px', right: '-5px', top: 0,
+        background: '#111', border: '1.5px solid rgba(250,204,21,0.15)', borderRadius: '3px', zIndex: 0 }} />
+    <div className="absolute"
+      style={{ bottom: '-3px', left: '-2px', right: '-2px', top: 0,
+        background: '#161616', border: '1.5px solid rgba(250,204,21,0.22)', borderRadius: '3px', zIndex: 1 }} />
 
-    {/* Closing quote */}
-    <span
-      className="absolute font-serif text-4xl leading-none"
-      style={{ color: '#facc15', opacity: 0.8, bottom: '52px', right: '14px' }}
-    >
-      &rdquo;
-    </span>
-
-    {/* Footer */}
+    {/* Main note */}
     <div
-      className="flex justify-between items-center pt-3 mt-4"
-      style={{ borderTop: '1px dashed rgba(250,204,21,0.25)' }}
+      className="relative p-3 flex flex-col"
+      style={{
+        background: '#1a1a1a',
+        border: '1.5px solid #facc15',
+        borderRadius: '5px',
+        minHeight: '169px',
+        zIndex: 2,
+        transform: `rotate(${rot}deg)`,
+      }}
     >
-      <span className="text-xs text-primary font-bold uppercase tracking-widest font-mono">
-        {new Date(msg.createdAt).toLocaleDateString(undefined, {
-          month: 'short', day: 'numeric', year: 'numeric',
-        })}
-      </span>
-      <button className="flex items-center gap-2 group/btn">
-        <Heart
-          size={16}
-          className="text-gray-500 group-hover/btn:text-red-500 transition-colors duration-300"
-        />
-        <span className="text-sm text-gray-500 group-hover/btn:text-white transition-colors duration-300">0</span>
-      </button>
+      {/* Corner brackets */}
+      {[
+        { top: '8px', left: '6px', borderTop: '1.5px solid rgba(250,204,21,0.5)', borderLeft: '1.5px solid rgba(250,204,21,0.5)' },
+        { top: '8px', right: '6px', borderTop: '1.5px solid rgba(250,204,21,0.5)', borderRight: '1.5px solid rgba(250,204,21,0.5)' },
+        { bottom: '8px', left: '6px', borderBottom: '1.5px solid rgba(250,204,21,0.5)', borderLeft: '1.5px solid rgba(250,204,21,0.5)' },
+        { bottom: '8px', right: '6px', borderBottom: '1.5px solid rgba(250,204,21,0.5)', borderRight: '1.5px solid rgba(250,204,21,0.5)' },
+      ].map((s, i) => (
+        <div key={i} className="absolute" style={{ width: '14px', height: '6px', borderRadius: '1px', ...s }} />
+      ))}
+
+      {/* Dashed lines top & bottom */}
+      <div className="absolute" style={{ top: '8px', left: '28px', right: '28px', borderTop: '1.5px dashed rgba(250,204,21,0.2)', opacity: 0.3 }} />
+      <div className="absolute" style={{ bottom: '30px', left: '28px', right: '28px', borderBottom: '1.5px dashed rgba(250,204,21,0.2)', opacity: 0.3 }} />
+
+      <p className="flex-1 text-lg leading-relaxed italic mt-3 mb-2 px-1"
+        style={{ fontFamily: 'Georgia, serif', color: 'rgba(255,255,255,0.88)' }}>
+        {msg.text}
+      </p>
+
+      <div className="flex justify-between items-center">
+        <span className="text-[9px] font-mono opacity-55" style={{ color: '#facc15' }}>
+          {new Date(msg.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+        </span>
+        <button className="flex items-center gap-1 opacity-45 hover:opacity-100 transition-opacity">
+          <Heart size={10} style={{ color: 'rgba(255,255,255,0.35)' }} className="hover:text-red-500" />
+          <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>0</span>
+        </button>
+      </div>
     </div>
   </div>
 </motion.div>
-))}
-          </AnimatePresence>
-        )}
-      </div>
+      );
+    })}
+  </AnimatePresence>
+</div>
 
       {!loading && messages.length === 0 && (
         <div className="text-center py-20">
