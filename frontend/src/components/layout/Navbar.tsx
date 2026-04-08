@@ -61,7 +61,18 @@ export default function Navbar() {
             ))}
             
             <SignedIn>
-              <UserButton appearance={{ elements: { avatarBox: "w-9 h-9 border-2 border-primary" } }}/>
+              <div className="flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/5 border border-primary/30 shadow-lg shadow-primary/10">
+                <span className="text-xs font-bold text-primary uppercase tracking-tighter max-w-[120px] truncate">
+                  {user?.fullName}
+                </span>
+                <UserButton 
+                  appearance={{ 
+                    elements: { 
+                      avatarBox: "w-8 h-8 border border-primary/50 shadow-glow" 
+                    } 
+                  }}
+                />
+              </div>
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
@@ -100,7 +111,18 @@ export default function Navbar() {
             ))}
             <div className="px-3 pt-4 border-t border-white/5 mt-4">
               <SignedIn>
-                <UserButton appearance={{ elements: { avatarBox: "w-10 h-10 border-2 border-primary" } }}/>
+                <div className="flex items-center justify-between px-4 py-2 rounded-2xl bg-white/5 border border-primary/20">
+                  <span className="text-sm font-bold text-primary uppercase">
+                    {user?.fullName}
+                  </span>
+                  <UserButton 
+                    appearance={{ 
+                      elements: { 
+                        avatarBox: "w-10 h-10 border-2 border-primary shadow-glow" 
+                      } 
+                    }}
+                  />
+                </div>
               </SignedIn>
               <SignedOut>
                 <SignInButton mode="modal">
