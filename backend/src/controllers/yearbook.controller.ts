@@ -15,7 +15,7 @@ import { uploadToCloudinary } from '../middleware/upload.middleware.js';
 export const createYearbookEntry = async (req: Request, res: Response) => {
   try {
     console.log('Yearbook Upload:', { body: req.body, file: req.file });
-    const { name, bio, hobbies, instagram } = req.body;
+    const { name, bio, hobbies, instagram, linkedin, department } = req.body;
     let imageUrl = req.body.imageUrl;
 
     if (req.file) {
@@ -29,8 +29,10 @@ export const createYearbookEntry = async (req: Request, res: Response) => {
     const newStudent = new Yearbook({
       name,
       bio,
+      department: department || 'CSE',
       hobbies: typeof hobbies === 'string' ? hobbies.split(',').map(h => h.trim()) : hobbies,
       instagram,
+      linkedin,
       imageUrl
     });
 
