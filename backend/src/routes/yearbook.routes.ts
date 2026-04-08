@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', getYearbook);
 router.post('/', requireAdmin, upload.single('image'), createYearbookEntry);
-router.put('/:id', requireAdmin, updateYearbookEntry);
+router.put('/:id', requireAdmin, upload.single('image'), updateYearbookEntry);
 router.delete('/:id', requireAdmin, deleteYearbookEntry);
 
 export default router;

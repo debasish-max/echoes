@@ -46,15 +46,38 @@ export const createYearbookEntry = async (req: Request, res: Response) => {
 export const updateYearbookEntry = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const updatedEntry = await Yearbook.findByIdAndUpdate(id, req.body, { new: true });
+    const { name, bio, hobbies, instagram, linkedin, department } = req.body;
+    let imageUrl = req.body.imageUrl;
+
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file, 'yearbook');
+    }
+
+    const updateData: any = {
+      name,
+      bio,
+      department: department || 'CSE',
+      instagram,
+      linkedin
+    };
+
+    if (hobbies) {
+      updateData.hobbies = typeof hobbies === 'string' ? hobbies.split(',').map((h: string) => h.trim()) : hobbies;
+    }
+
+    if (imageUrl) {
+      updateData.imageUrl = imageUrl;
+    }
+
+    const updatedEntry = await Yearbook.findByIdAndUpdate(id, updateData, { new: true });
     
     if (!updatedEntry) {
       return res.status(404).json({ message: 'Student entry not found' });
     }
     
     res.status(200).json(updatedEntry);
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating yearbook entry', error });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error updating yearbook entry', error: error.message });
   }
 };
 
