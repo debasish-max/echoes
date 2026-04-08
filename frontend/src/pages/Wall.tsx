@@ -94,38 +94,70 @@ export default function Wall() {
           </div>
         ) : (
           <AnimatePresence mode="popLayout">
-            {messages.map((msg, index) => (
-              <motion.div
-                layout
-                key={msg._id}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4 }}
-                className="glass p-8 rounded-3xl border-white/5 hover:border-primary/10 transition-colors duration-300 relative group overflow-hidden"
-              >
-                {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity duration-300">
-                  <MessageSquare size={80} strokeWidth={1} />
-                </div>
-                
-                <p className="text-xl md:text-2xl font-serif text-white/90 leading-relaxed relative z-10 mb-6 drop-shadow-sm italic">
-                  "{msg.text}"
-                </p>
-                
-                <div className="flex justify-between items-center relative z-10">
-                  <span className="text-xs text-primary font-bold uppercase tracking-widest">
-                    {new Date(msg.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                  </span>
-                  <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-2 group/btn">
-                      <Heart size={18} className="text-gray-500 group-hover/btn:text-red-500 transition-colors duration-300" />
-                      <span className="text-sm text-gray-500 group-hover/btn:text-white transition-colors duration-300">0</span>
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+           {messages.map((msg, index) => (
+  <motion.div
+  layout
+  key={msg._id}
+  initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+  animate={{ opacity: 1, x: 0 }}
+  exit={{ opacity: 0, scale: 0.95 }}
+  transition={{ duration: 0.4 }}
+  style={{ transform: `rotate(${index % 2 === 0 ? '-0.8deg' : '0.6deg'})` }}
+  className="relative group"
+>
+  <div
+    className="relative p-8 pt-10"
+    style={{
+      background: '#1a1a1a',
+      boxShadow: '6px 6px 0px #facc15',
+      border: '1px solid rgba(250,204,21,0.2)',
+      borderRadius: '4px',
+    }}
+  >
+    {/* Opening quote */}
+    <span
+      className="absolute top-2 left-4 font-serif text-4xl leading-none"
+      style={{ color: '#facc15', opacity: 0.8 }}
+    >
+      &ldquo;
+    </span>
+
+    <p
+      className="text-xl md:text-2xl leading-relaxed mb-6 italic text-white/90"
+      style={{ fontFamily: 'Georgia, serif' }}
+    >
+      {msg.text}
+    </p>
+
+    {/* Closing quote */}
+    <span
+      className="absolute font-serif text-4xl leading-none"
+      style={{ color: '#facc15', opacity: 0.8, bottom: '52px', right: '14px' }}
+    >
+      &rdquo;
+    </span>
+
+    {/* Footer */}
+    <div
+      className="flex justify-between items-center pt-3 mt-4"
+      style={{ borderTop: '1px dashed rgba(250,204,21,0.25)' }}
+    >
+      <span className="text-xs text-primary font-bold uppercase tracking-widest font-mono">
+        {new Date(msg.createdAt).toLocaleDateString(undefined, {
+          month: 'short', day: 'numeric', year: 'numeric',
+        })}
+      </span>
+      <button className="flex items-center gap-2 group/btn">
+        <Heart
+          size={16}
+          className="text-gray-500 group-hover/btn:text-red-500 transition-colors duration-300"
+        />
+        <span className="text-sm text-gray-500 group-hover/btn:text-white transition-colors duration-300">0</span>
+      </button>
+    </div>
+  </div>
+</motion.div>
+))}
           </AnimatePresence>
         )}
       </div>

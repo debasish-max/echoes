@@ -18,7 +18,7 @@ export default function Home() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[200px] bg-primary/20 blur-[100px] rounded-full z-0 pointer-events-none" />
           
           <h1 className="text-6xl md:text-8xl font-serif font-bold tracking-tight mb-4 relative z-10">
-            Batch <span className="text-primary drop-shadow-lg text-glow">2022–26</span>
+            Batch <span className="text-primary drop-shadow-lg text-glow">2023–26</span>
           </h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
