@@ -48,6 +48,33 @@ export const createJourneyEntry = async (req: Request, res: Response) => {
   }
 };
 
+export const updateJourneyEntry = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { semester, caption } = req.body;
+    let imageUrl = req.body.imageUrl;
+
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file, 'journey');
+    }
+
+    const updateData: any = { semester: Number(semester), caption };
+    if (imageUrl) {
+      updateData.imageUrl = imageUrl;
+    }
+
+    const updatedEntry = await Journey.findByIdAndUpdate(id, updateData, { new: true });
+    
+    if (!updatedEntry) {
+      return res.status(404).json({ message: 'Entry not found' });
+    }
+    
+    res.status(200).json(updatedEntry);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error updating journey entry', error: error.message });
+  }
+};
+
 export const deleteJourneyEntry = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
