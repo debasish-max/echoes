@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Instagram, Search, Loader2, Sparkles, Linkedin, X, Send, Quote } from 'lucide-react';
+import { Instagram, Search, Loader2, Sparkles, Linkedin, X, Quote } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 
@@ -14,12 +14,6 @@ interface Student {
   imageUrl: string;
 }
 
-interface LegacyMessage {
-  _id: string;
-  author: string;
-  content: string;
-  createdAt: string;
-}
 
 export default function Yearbook() {
   const [search, setSearch] = useState('');
@@ -145,40 +139,6 @@ export default function Yearbook() {
 }
 
 function StudentProfileModal({ student, onClose }: { student: Student; onClose: () => void }) {
-  const [messages, setMessages] = useState<LegacyMessage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [newMessage, setNewMessage] = useState({ author: '', content: '' });
-  const [sending, setSending] = useState(false);
-
-  const fetchMessages = async () => {
-    try {
-      const { data } = await api.get(`/messages/${student._id}`);
-      setMessages(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-  }, [student._id]);
-
-  const handleSubmitMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.author || !newMessage.content) return;
-    try {
-      setSending(true);
-      await api.post(`/messages/${student._id}`, newMessage);
-      setNewMessage({ author: '', content: '' });
-      fetchMessages();
-    } catch (err) {
-      alert('Failed to post message');
-    } finally {
-      setSending(false);
-    }
-  };
 
   return (
     <motion.div
@@ -202,40 +162,41 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
           <X size={20} />
         </button>
 
-        {/* Left Column: Portrait & Info */}
-        <div className="w-full md:w-[40%] h-[40vh] md:h-auto relative overflow-hidden flex flex-col">
-          <div className="flex-1 relative">
-            <img 
-              src={student.imageUrl} 
-              alt={student.name} 
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-            
-            {/* Social Overlays */}
-            <div className="absolute bottom-12 left-10 right-10">
-              <h2 className="text-4xl font-serif font-bold text-white mb-1 text-glow">{student.name}</h2>
-              <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-6">{student.department}</p>
-              
-              <div className="flex gap-4">
-                {student.instagram && (
-                  <a href={`https://instagram.com/${student.instagram}`} target="_blank" className="p-3 bg-white/10 hover:bg-white/20 rounded-xl border border-white/10 text-white transition-all">
-                    <Instagram size={20} />
-                  </a>
-                )}
-                {student.linkedin && (
-                  <a href={student.linkedin} target="_blank" className="p-3 bg-white/10 hover:bg-white/20 rounded-xl border border-white/10 text-white transition-all">
-                    <Linkedin size={20} />
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
+        {/* Left Column: Portrait Only */}
+        <div className="w-full md:w-[45%] h-[50vh] md:h-auto relative overflow-hidden">
+          <img 
+            src={student.imageUrl} 
+            alt={student.name} 
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         </div>
 
-        {/* Right Column: Bio & Legacy Wall */}
+        {/* Right Column: All Info */}
         <div className="flex-1 overflow-y-auto custom-scrollbar bg-surface/30 p-8 md:p-12">
-          <div className="max-w-2xl mx-auto space-y-12">
+          <div className="max-w-2xl mx-auto space-y-10">
+            
+            {/* Header Info */}
+            <header className="border-b border-white/5 pb-8">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2 text-glow">{student.name}</h2>
+                  <p className="text-primary font-bold tracking-[0.2em] text-sm uppercase">{student.department}</p>
+                </div>
+                
+                <div className="flex gap-3">
+                  {student.instagram && (
+                    <a href={`https://instagram.com/${student.instagram}`} target="_blank" className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-white transition-all duration-300">
+                      <Instagram size={20} />
+                    </a>
+                  )}
+                  {student.linkedin && (
+                    <a href={student.linkedin} target="_blank" className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-white transition-all duration-300">
+                      <Linkedin size={20} />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </header>
             
             {/* Bio Section */}
             <section>
@@ -257,70 +218,6 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
               ))}
             </section>
 
-            {/* Legacy Message Wall */}
-            <section className="space-y-8 pt-8 border-t border-white/5">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-bold text-white">The Legacy Wall</h3>
-                <span className="text-xs text-gray-500 font-mono">{messages.length} Memories</span>
-              </div>
-
-              {/* Message List */}
-              <div className="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                {loading ? (
-                  <Loader2 className="animate-spin text-primary mx-auto" />
-                ) : messages.length === 0 ? (
-                  <div className="p-8 bg-white/5 rounded-2xl border border-white/5 text-center italic text-gray-600 text-sm">
-                    No messages yet. Be the first to leave a memory!
-                  </div>
-                ) : (
-                  messages.map(msg => (
-                    <motion.div 
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      key={msg._id} 
-                      className="p-4 bg-white/5 rounded-2xl border border-white/5 relative group"
-                    >
-                      <p className="text-gray-300 text-sm leading-relaxed mb-2">"{msg.content}"</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-primary text-[10px] font-bold uppercase tracking-widest">— {msg.author}</span>
-                        <span className="text-[8px] text-gray-600 uppercase font-mono">{new Date(msg.createdAt).toLocaleDateString()}</span>
-                      </div>
-                    </motion.div>
-                  ))
-                )}
-              </div>
-
-              {/* Message Form */}
-              <form onSubmit={handleSubmitMessage} className="bg-black/40 p-6 rounded-3xl border border-primary/10 space-y-4">
-                <h4 className="text-xs font-bold text-primary/70 uppercase tracking-widest">Leave a memory</h4>
-                <div className="space-y-3">
-                  <input 
-                    type="text" 
-                    placeholder="Your Name" 
-                    required 
-                    className="w-full bg-white/5 border border-white/5 rounded-xl py-2 px-4 text-white text-sm outline-none focus:border-primary/50"
-                    value={newMessage.author}
-                    onChange={e => setNewMessage({...newMessage, author: e.target.value})}
-                  />
-                  <textarea 
-                    placeholder="Write something heartfelt..." 
-                    required 
-                    className="w-full bg-white/5 border border-white/5 rounded-xl py-3 px-4 text-white text-sm outline-none focus:border-primary/50 h-24"
-                    value={newMessage.content}
-                    onChange={e => setNewMessage({...newMessage, content: e.target.value})}
-                  />
-                  <button 
-                    type="submit" 
-                    disabled={sending}
-                    className="w-full bg-primary text-black font-bold py-3 rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
-                  >
-                    {sending ? <Loader2 className="animate-spin" size={18} /> : (
-                      <>Post Memory <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /></>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </section>
 
           </div>
         </div>
