@@ -39,8 +39,12 @@ export const createJourneyEntry = async (req: Request, res: Response) => {
 
     await newEntry.save();
     res.status(201).json(newEntry);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating journey entry', error });
+  } catch (error: any) {
+    console.error('Journey Upload Controller Error:', error);
+    res.status(500).json({ 
+      message: 'Error creating journey entry', 
+      error: error.message || error 
+    });
   }
 };
 
