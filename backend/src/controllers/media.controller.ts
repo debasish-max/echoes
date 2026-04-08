@@ -42,6 +42,33 @@ export const createMediaEntry = async (req: Request, res: Response) => {
   }
 };
 
+export const updateMediaEntry = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { caption } = req.body;
+    let imageUrl = req.body.imageUrl;
+
+    if (req.file) {
+      imageUrl = await uploadToCloudinary(req.file, 'vault');
+    }
+
+    const updateData: any = { caption };
+    if (imageUrl) {
+      updateData.imageUrl = imageUrl;
+    }
+
+    const updatedMedia = await Media.findByIdAndUpdate(id, updateData, { new: true });
+    
+    if (!updatedMedia) {
+      return res.status(404).json({ message: 'Media entry not found' });
+    }
+    
+    res.status(200).json(updatedMedia);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error updating media entry', error: error.message });
+  }
+};
+
 export const deleteMediaEntry = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
