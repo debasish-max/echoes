@@ -4,6 +4,39 @@ import { Plus, Trash2, Pencil, Image as ImageIcon, Users, BookOpen, Loader2, X, 
 import clsx from 'clsx';
 import api from '../lib/api';
 import { useAuth } from '@clerk/clerk-react';
+import ActionModal from '../components/ui/ActionModal';
+import type { ActionModalProps } from '../components/ui/ActionModal';
+
+function useActionModal() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [config, setConfig] = useState<Omit<ActionModalProps, 'isOpen'>>({
+    type: 'alert',
+    title: '',
+    message: '',
+    onConfirm: () => setIsOpen(false),
+    onCancel: () => setIsOpen(false)
+  });
+
+  const showAlert = (title: string, message: string, type: 'alert' | 'success' = 'alert') => {
+    setConfig({ type, title, message, onConfirm: () => setIsOpen(false), onCancel: () => setIsOpen(false) });
+    setIsOpen(true);
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setConfig({
+      type: 'confirm',
+      title,
+      message,
+      onConfirm: () => { setIsOpen(false); onConfirm(); },
+      onCancel: () => setIsOpen(false),
+      confirmText: 'Delete',
+      cancelText: 'Cancel'
+    });
+    setIsOpen(true);
+  };
+
+  return { showAlert, showConfirm, modalProps: { ...config, isOpen } };
+}
 
 type Tab = 'journey' | 'yearbook' | 'vault';
 
@@ -84,6 +117,7 @@ function JourneyManager() {
   const [file, setFile] = useState<File | null>(null);
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const { getToken } = useAuth();
+  const modal = useActionModal();
 
   const fetchItems = async () => {
     try {
@@ -111,7 +145,7 @@ function JourneyManager() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file && !editingItem) { alert('Please select an image'); return; }
+    if (!file && !editingItem) { modal.showAlert('Missing Image', 'Please select an image'); return; }
 
     try {
       setIsSubmitting(true);
@@ -139,16 +173,17 @@ function JourneyManager() {
 
       resetForm();
       fetchItems();
-    } catch (error: any) { alert(error.response?.data?.message || `Failed to ${editingItem ? 'update' : 'add'} entry`); } finally { setIsSubmitting(false); }
+    } catch (error: any) { modal.showAlert('Error', error.response?.data?.message || `Failed to ${editingItem ? 'update' : 'add'} entry`); } finally { setIsSubmitting(false); }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
-    try {
-      const token = await getToken();
-      await api.delete(`/journey/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      fetchItems();
-    } catch (error) { alert('Delete failed'); }
+  const handleDelete = (id: string) => {
+    modal.showConfirm('Confirm Deletion', 'Are you sure you want to delete this entry?', async () => {
+      try {
+        const token = await getToken();
+        await api.delete(`/journey/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        fetchItems();
+      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+    });
   };
 
   return (
@@ -241,6 +276,7 @@ function JourneyManager() {
         ))}
         {!loading && items.length === 0 && <p className="text-center text-gray-600 italic">No journey entries yet.</p>}
       </div>
+      <ActionModal {...modal.modalProps} />
     </div>
   );
 }
@@ -254,6 +290,7 @@ function YearbookManager() {
   const [file, setFile] = useState<File | null>(null);
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const { getToken } = useAuth();
+  const modal = useActionModal();
 
   const fetchItems = async () => {
     try {
@@ -288,7 +325,7 @@ function YearbookManager() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file && !editingItem) { alert('Please select a profile image'); return; }
+    if (!file && !editingItem) { modal.showAlert('Missing Image', 'Please select a profile image'); return; }
 
     try {
       setIsSubmitting(true);
@@ -320,16 +357,17 @@ function YearbookManager() {
 
       resetForm();
       fetchItems();
-    } catch (error: any) { alert(error.response?.data?.message || `Failed to ${editingItem ? 'update' : 'add'} entry`); } finally { setIsSubmitting(false); }
+    } catch (error: any) { modal.showAlert('Error', error.response?.data?.message || `Failed to ${editingItem ? 'update' : 'add'} entry`); } finally { setIsSubmitting(false); }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
-    try {
-      const token = await getToken();
-      await api.delete(`/yearbook/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      fetchItems();
-    } catch (error) { alert('Delete failed'); }
+  const handleDelete = (id: string) => {
+    modal.showConfirm('Confirm Deletion', 'Are you sure you want to delete this student profile?', async () => {
+      try {
+        const token = await getToken();
+        await api.delete(`/yearbook/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        fetchItems();
+      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+    });
   };
 
   return (
@@ -415,6 +453,7 @@ function YearbookManager() {
         ))}
         {!loading && items.length === 0 && <p className="text-center text-gray-600 italic">Directory is empty.</p>}
       </div>
+      <ActionModal {...modal.modalProps} />
     </div>
   );
 }
@@ -428,6 +467,7 @@ function VaultManager() {
   const [file, setFile] = useState<File | null>(null);
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const { getToken } = useAuth();
+  const modal = useActionModal();
 
   const fetchItems = async () => {
     try {
@@ -455,7 +495,7 @@ function VaultManager() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file && !editingItem) { alert('Please select an image'); return; }
+    if (!file && !editingItem) { modal.showAlert('Missing Image', 'Please select an image'); return; }
 
     try {
       setIsSubmitting(true);
@@ -482,16 +522,17 @@ function VaultManager() {
 
       resetForm();
       fetchItems();
-    } catch (error: any) { alert(error.response?.data?.message || `Failed to ${editingItem ? 'update' : 'add'} to vault`); } finally { setIsSubmitting(false); }
+    } catch (error: any) { modal.showAlert('Error', error.response?.data?.message || `Failed to ${editingItem ? 'update' : 'add'} to vault`); } finally { setIsSubmitting(false); }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
-    try {
-      const token = await getToken();
-      await api.delete(`/media/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-      fetchItems();
-    } catch (error) { alert('Delete failed'); }
+  const handleDelete = (id: string) => {
+    modal.showConfirm('Confirm Deletion', 'Are you sure you want to delete this media entry?', async () => {
+      try {
+        const token = await getToken();
+        await api.delete(`/media/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        fetchItems();
+      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+    });
   };
 
   return (
@@ -574,6 +615,7 @@ function VaultManager() {
         ))}
         {!loading && items.length === 0 && <p className="col-span-full text-center text-gray-600 italic">No media shared yet.</p>}
       </div>
+      <ActionModal {...modal.modalProps} />
     </div>
   );
 }
