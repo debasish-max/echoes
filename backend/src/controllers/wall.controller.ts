@@ -25,3 +25,16 @@ export const createMessage = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error creating message', error });
   }
 };
+
+export const deleteMessage = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deletedMessage = await WallMessage.findByIdAndDelete(id);
+    if (!deletedMessage) {
+      return res.status(404).json({ message: 'Message not found' });
+    }
+    res.status(200).json({ message: 'Message deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting message', error });
+  }
+};
