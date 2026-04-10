@@ -6,7 +6,7 @@ import Yearbook from './pages/Yearbook';
 import MediaVault from './pages/MediaVault';
 import Wall from './pages/Wall';
 import AdminPanel from './pages/AdminPanel';
-
+import AdminRoute from './components/auth/AdminRoute';
 function App() {
   return (
     <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-black">
@@ -18,7 +18,7 @@ function App() {
           <Route path="/yearbook" element={<Yearbook />} />
           <Route path="/vault" element={<MediaVault />} />
           <Route path="/wall" element={<Wall />} />
-          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
         </Routes>
       </main>
       
