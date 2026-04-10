@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Heart, Loader2 } from 'lucide-react';
+import { Send, Loader2, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useUser, useAuth } from '@clerk/clerk-react';
@@ -51,6 +51,20 @@ export default function Wall() {
       console.error('Error posting message:', error);
     } finally {
       setPosting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this quote?')) return;
+    try {
+      const token = await getToken();
+      await api.delete(`/wall/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessages(messages.filter(msg => msg._id !== id));
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      alert('Failed to delete message');
     }
   };
 
@@ -153,7 +167,7 @@ export default function Wall() {
         { bottom: '8px', left: '6px', borderBottom: '1.5px solid rgba(250,204,21,0.5)', borderLeft: '1.5px solid rgba(250,204,21,0.5)' },
         { bottom: '8px', right: '6px', borderBottom: '1.5px solid rgba(250,204,21,0.5)', borderRight: '1.5px solid rgba(250,204,21,0.5)' },
       ].map((s, i) => (
-        <div key={i} className="absolute" style={{ width: '14px', height: '6px', borderRadius: '1px', ...s }} />
+        <div key={i} className="absolute" style={{ width: '14px', height: '12px', borderRadius: '2px', ...s }} />
       ))}
 
       {/* Dashed lines top & bottom */}
@@ -166,13 +180,18 @@ export default function Wall() {
       </p>
 
       <div className="flex justify-between items-center">
-        <span className="text-[9px] font-mono opacity-55" style={{ color: '#facc15' }}>
+        <span className="text-[11px] font-mono opacity-55" style={{ color: '#facc15' }}>
           {new Date(msg.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
         </span>
-        <button className="flex items-center gap-1 opacity-45 hover:opacity-100 transition-opacity">
-          <Heart size={10} style={{ color: 'rgba(255,255,255,0.35)' }} className="hover:text-red-500" />
-          <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>0</span>
-        </button>
+        {isAdmin && (
+          <button 
+            onClick={() => handleDelete(msg._id)}
+            className="flex items-center gap-1 opacity-69 hover:opacity-100 transition-opacity text-red-500/70 hover:text-red-500"
+            title="Delete Quote"
+          >
+            <Trash2 size={20} />
+          </button>
+        )}
       </div>
     </div>
   </div>
