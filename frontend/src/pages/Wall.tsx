@@ -3,6 +3,39 @@ import { Send, Loader2, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useUser, useAuth } from '@clerk/clerk-react';
+import ActionModal from '../components/ui/ActionModal';
+import type { ActionModalProps } from '../components/ui/ActionModal';
+
+function useActionModal() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [config, setConfig] = useState<Omit<ActionModalProps, 'isOpen'>>({
+    type: 'alert',
+    title: '',
+    message: '',
+    onConfirm: () => setIsOpen(false),
+    onCancel: () => setIsOpen(false)
+  });
+
+  const showAlert = (title: string, message: string, type: 'alert' | 'success' = 'alert') => {
+    setConfig({ type, title, message, onConfirm: () => setIsOpen(false), onCancel: () => setIsOpen(false) });
+    setIsOpen(true);
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setConfig({
+      type: 'confirm',
+      title,
+      message,
+      onConfirm: () => { setIsOpen(false); onConfirm(); },
+      onCancel: () => setIsOpen(false),
+      confirmText: 'Delete',
+      cancelText: 'Cancel'
+    });
+    setIsOpen(true);
+  };
+
+  return { showAlert, showConfirm, modalProps: { ...config, isOpen } };
+}
 
 interface WallMsg {
   _id: string;
@@ -19,6 +52,7 @@ export default function Wall() {
   const { user } = useUser();
   const { getToken } = useAuth();
   const isAdmin = user?.publicMetadata?.role === 'admin';
+  const modal = useActionModal();
 
   const fetchMessages = async () => {
     try {
@@ -54,18 +88,19 @@ export default function Wall() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this quote?')) return;
-    try {
-      const token = await getToken();
-      await api.delete(`/wall/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMessages(messages.filter(msg => msg._id !== id));
-    } catch (error) {
-      console.error('Error deleting message:', error);
-      alert('Failed to delete message');
-    }
+  const handleDelete = (id: string) => {
+    modal.showConfirm('Delete Quote', 'Are you sure you want to permanently delete this anonymous quote?', async () => {
+      try {
+        const token = await getToken();
+        await api.delete(`/wall/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessages(messages.filter(msg => msg._id !== id));
+      } catch (error) {
+        console.error('Error deleting message:', error);
+        modal.showAlert('Error', 'Failed to delete message. Please try again.');
+      }
+    });
   };
 
   return (
@@ -206,6 +241,7 @@ export default function Wall() {
           <p className="text-gray-500 italic">No messages yet. Be the first to break the silence.</p>
         </div>
       )}
+      <ActionModal {...modal.modalProps} />
     </div>
   );
 }
