@@ -91,19 +91,19 @@ export default function Yearbook() {
               </div>
 
               <div className="p-6">
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className="text-xl font-serif font-bold text-primary group-hover:text-glow transition-all duration-300">{student.name}</h3>
-                  <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">{student.department}</span>
+                <div className="flex flex-col mb-3">
+                  <h3 className="text-xl font-serif font-bold text-primary group-hover:text-glow transition-all duration-300 line-clamp-2 leading-tight">{student.name}</h3>
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mt-1 line-clamp-1">{student.department}</span>
                 </div>
-                <p className="text-sm text-gray-400 leading-relaxed mb-4 line-clamp-3 italic">"{student.bio}"</p>
+                <p className="text-sm text-gray-400 leading-relaxed mb-4 line-clamp-3 italic break-words">"{student.bio}"</p>
                 
                 <div className="flex flex-wrap gap-2">
                   {student.hobbies.slice(0, 3).map(hobby => (
-                    <span key={hobby} className="text-[10px] uppercase tracking-widest px-2 py-1 bg-white/5 rounded-md border border-white/5 text-gray-300">
+                    <span key={hobby} className="text-[10px] uppercase tracking-widest px-2 py-1 bg-white/5 rounded-md border border-white/5 text-gray-300 truncate max-w-full">
                       {hobby}
                     </span>
                   ))}
-                  {student.hobbies.length > 3 && <span className="text-[10px] text-gray-500">+{student.hobbies.length - 3}</span>}
+                  {student.hobbies.length > 3 && <span className="text-[10px] text-gray-500 flex items-center tracking-widest">+{student.hobbies.length - 3} more</span>}
                 </div>
               </div>
             </motion.div>
