@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, CheckCircle, X, Info, Trash2 } from 'lucide-react';
 import clsx from 'clsx';
