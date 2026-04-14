@@ -20,6 +20,9 @@ import logger from './utils/logger.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Required for Render/Proxies to work with express-rate-limit
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(helmet()); // Security headers
 app.use(compression()); // Compress responses
