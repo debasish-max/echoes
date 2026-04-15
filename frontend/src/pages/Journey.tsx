@@ -81,7 +81,7 @@ export default function Journey() {
           <p className="text-gray-500 animate-pulse">Reliving memories...</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           <AnimatePresence mode="popLayout">
             {photos.map((photo) => (
               <motion.div
@@ -91,12 +91,12 @@ export default function Journey() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4 }}
-                className="group relative rounded-2xl overflow-hidden glass aspect-[4/5]"
+                className="group relative rounded-2xl overflow-hidden glass break-inside-avoid mb-6"
               >
                 <img 
                   src={photo.imageUrl} 
                   alt={photo.caption} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                   <span className="text-primary text-xs font-bold uppercase tracking-widest mb-1">Semester {photo.semester}</span>
