@@ -34,4 +34,13 @@
   .text-glow {
     text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
   }
+
+  .masonry-item {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
 }
