@@ -21,7 +21,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Required for Render/Proxies to work with express-rate-limit
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 
 // Middleware
 app.use(helmet()); // Security headers
@@ -30,7 +30,7 @@ app.use(compression()); // Compress responses
 // Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 100, // Limit each IP to 100 requests per `window`
+  limit: 1000, // Limit each IP to 1000 requests per `window` to avoid blocking valid page navigation
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: { message: 'Too many requests from this IP, please try again later.' }
