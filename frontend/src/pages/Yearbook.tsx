@@ -145,19 +145,21 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-8"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, y: 20, opacity: 0 }}
+        initial={{ scale: 0.95, y: 20, opacity: 0 }}
         animate={{ scale: 1, y: 0, opacity: 1 }}
-        exit={{ scale: 0.9, y: 20, opacity: 0 }}
+        exit={{ scale: 0.95, y: 20, opacity: 0 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
         className="glass w-full max-w-6xl h-full md:max-h-[85vh] overflow-hidden rounded-[2.5rem] border-primary/20 shadow-2xl relative flex flex-col md:flex-row"
         onClick={e => e.stopPropagation()}
       >
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 z-[110] p-3 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 text-white transition-all duration-300"
+          className="absolute top-4 right-4 md:top-6 md:right-6 z-[120] p-3 bg-black/40 backdrop-blur-md hover:bg-black/60 rounded-full border border-white/10 text-white transition-all duration-300 shadow-xl"
         >
           <X size={20} />
         </button>
