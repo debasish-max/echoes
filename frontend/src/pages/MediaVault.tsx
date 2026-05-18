@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, X, ZoomIn, Heart, Share2, Loader2 } from 'lucide-react';
+import { Upload, X, ZoomIn, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useAuth } from '@clerk/clerk-react';

@@ -182,7 +182,7 @@ function JourneyManager() {
         const token = await getToken();
         await api.delete(`/journey/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         fetchItems();
-      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+      } catch { modal.showAlert('Error', 'Delete failed'); }
     });
   };
 
@@ -366,7 +366,7 @@ function YearbookManager() {
         const token = await getToken();
         await api.delete(`/yearbook/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         fetchItems();
-      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+      } catch { modal.showAlert('Error', 'Delete failed'); }
     });
   };
 
@@ -531,7 +531,7 @@ function VaultManager() {
         const token = await getToken();
         await api.delete(`/media/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         fetchItems();
-      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+      } catch { modal.showAlert('Error', 'Delete failed'); }
     });
   };
 
