@@ -15,17 +15,22 @@ interface JourneyPhoto {
 
 function HeroSwiper({ photos }: { photos: JourneyPhoto[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    if (photos.length <= 1) return;
+    if (photos.length <= 1 || isHovered) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % photos.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, [photos.length]);
+  }, [photos.length, isHovered]);
 
   return (
-    <div className="relative p-3 bg-white border-[8px] border-white rounded-sm shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 max-w-md ml-auto">
+    <div 
+      className="relative p-3 bg-white border-[8px] border-white rounded-sm shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 max-w-md ml-auto"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <AnimatePresence mode="popLayout">
           <motion.img
