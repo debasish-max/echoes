@@ -110,8 +110,13 @@ export default function Wall() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-16"
       >
-        <h1 className="text-5xl font-serif font-bold mb-4 text-glow">The Wall</h1>
-        <p className="text-gray-400 italic">Whispers and memories shared anonymously</p>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-bold uppercase tracking-widest mb-6 shadow-[0_0_15px_rgba(250,204,21,0.1)]">
+          <span className="text-[10px]">💛</span> FINAL GOODBYES
+        </div>
+        <h1 className="text-5xl font-serif font-bold mb-4 text-white">Message Wall of Reflection</h1>
+        <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
+          A space to leave your final words, memories, and wishes. These notes will remain here as a testament to our journey.
+        </p>
       </motion.div>
 
       {/* Message Input */}
