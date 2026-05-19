@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, X, ZoomIn, Heart, Share2, Loader2 } from 'lucide-react';
+import { Upload, X, ZoomIn, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useAuth } from '@clerk/clerk-react';
@@ -91,8 +91,10 @@ export default function MediaVault() {
         className="flex flex-col md:flex-row justify-between items-center mb-16 gap-8"
       >
         <div className="text-center md:text-left">
-          <h1 className="text-5xl font-serif font-bold mb-4 text-glow">Media Vault</h1>
-          <p className="text-gray-400">Collaborative memories shared by the batch</p>
+          <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-glow italic">Media Vault</h1>
+          <p className="text-gray-400 max-w-xl text-lg leading-relaxed">
+            A chaotic, beautiful, and unfiltered collection of our best moments. This collaborative vault is filled with candid snapshots, spontaneous adventures, and everything in between, contributed by the entire batch.
+          </p>
         </div>
         
         <button 
@@ -144,10 +146,6 @@ export default function MediaVault() {
                         <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-widest">
                           Expand <ZoomIn size={12} />
                         </div>
-                        <div className="flex items-center gap-2 text-gray-400">
-                           <Heart size={14} className="group-hover:text-red-500 transition-colors" /> 
-                           <span className="text-xs font-mono">{photo.likes}</span>
-                        </div>
                      </div>
                    </motion.div>
                 </div>
@@ -167,34 +165,30 @@ export default function MediaVault() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-8"
             onClick={() => setSelectedPhoto(null)}
           >
-            <button className="absolute top-8 right-8 text-white hover:text-primary p-2 bg-white/10 rounded-full transition-colors duration-300">
+            <button className="absolute top-4 right-4 md:top-8 md:right-8 z-[120] text-white hover:text-primary p-3 bg-black/40 backdrop-blur-md hover:bg-black/60 rounded-full transition-colors duration-300 shadow-xl">
               <X size={24} />
             </button>
             
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative max-w-5xl w-full h-full flex flex-col items-center justify-center gap-6"
+              initial={{ scale: 0.95, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative max-w-5xl w-full h-full flex flex-col overflow-y-auto no-scrollbar"
               onClick={(e) => e.stopPropagation()}
             >
-              <img 
-                src={selectedPhoto.imageUrl} 
-                alt={selectedPhoto.caption} 
-                className="max-h-[80vh] w-auto rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10"
-              />
-              <div className="text-center">
-                <h3 className="text-2xl font-serif text-white mb-2">{selectedPhoto.caption}</h3>
-                <div className="flex justify-center gap-6">
-                  <button className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors duration-300">
-                    <Heart size={20} /> Like ({selectedPhoto.likes})
-                  </button>
-                  <button className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors duration-300">
-                    <Share2 size={20} /> Share
-                  </button>
+              <div className="m-auto flex flex-col items-center gap-6 w-full py-16 md:py-8">
+                <img 
+                  src={selectedPhoto.imageUrl} 
+                  alt={selectedPhoto.caption} 
+                  className="w-full md:max-h-[80vh] md:w-auto h-auto rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10"
+                />
+                <div className="text-center pb-8 md:pb-0 px-4">
+                  <h3 className="text-2xl font-serif text-white">{selectedPhoto.caption}</h3>
                 </div>
               </div>
             </motion.div>

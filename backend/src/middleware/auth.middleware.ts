@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { getAuth } from '@clerk/express';
+import { getAuth, clerkClient } from '@clerk/express';
 
 export const requireAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -9,8 +9,15 @@ export const requireAdmin = async (req: Request, res: Response, next: NextFuncti
       return res.status(401).json({ message: 'Unauthorized access' });
     }
 
-    // Check role in session claims metadata
-    const role = (auth.sessionClaims?.metadata as any)?.role;
+    // First try to check role in session claims metadata (requires Clerk JWT Template setup)
+    let role = (auth.sessionClaims?.metadata as any)?.role;
+
+    // Fallback: If role is not in the JWT claims, fetch the user from Clerk API directly
+    if (!role) {
+      const user = await clerkClient.users.getUser(auth.userId);
+      role = user.publicMetadata?.role;
+    }
+
     console.log('Admin Auth Check:', { userId: auth.userId, role });
 
     // DEVELOPMENT BYPASS: Allow access if role is admin OR if we're debugging

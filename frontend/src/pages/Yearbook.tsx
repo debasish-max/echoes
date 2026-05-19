@@ -48,8 +48,10 @@ export default function Yearbook() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-16"
       >
-        <h1 className="text-5xl font-serif font-bold mb-4 text-glow">The Yearbook</h1>
-        <p className="text-gray-400">Faces and stories that shaped Batch-26</p>
+        <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-glow italic">The Yearbook</h1>
+        <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
+          Every face holds a story, and every story shaped who we are. Browse through the profiles of Batch-26—the dreamers, the achievers, and the friends who made this journey truly unforgettable.
+        </p>
       </motion.div>
 
       {/* Search Bar */}
@@ -145,19 +147,21 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-8"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, y: 20, opacity: 0 }}
+        initial={{ scale: 0.95, y: 20, opacity: 0 }}
         animate={{ scale: 1, y: 0, opacity: 1 }}
-        exit={{ scale: 0.9, y: 20, opacity: 0 }}
+        exit={{ scale: 0.95, y: 20, opacity: 0 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
         className="glass w-full max-w-6xl h-full md:max-h-[85vh] overflow-hidden rounded-[2.5rem] border-primary/20 shadow-2xl relative flex flex-col md:flex-row"
         onClick={e => e.stopPropagation()}
       >
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 z-[110] p-3 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 text-white transition-all duration-300"
+          className="absolute top-4 right-4 md:top-6 md:right-6 z-[120] p-3 bg-black/40 backdrop-blur-md hover:bg-black/60 rounded-full border border-white/10 text-white transition-all duration-300 shadow-xl"
         >
           <X size={20} />
         </button>
@@ -172,7 +176,7 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
         </div>
 
         {/* Right Column: All Info */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar bg-surface/30 p-8 md:p-12">
+        <div className="flex-1 overflow-y-auto no-scrollbar bg-surface/30 p-8 md:p-12">
           <div className="max-w-2xl mx-auto space-y-10">
             
             {/* Header Info */}

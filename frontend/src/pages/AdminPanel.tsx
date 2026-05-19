@@ -116,6 +116,7 @@ function JourneyManager() {
   const [formData, setFormData] = useState({ semester: 1, caption: '' });
   const [file, setFile] = useState<File | null>(null);
   const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [isHeroSubmitting, setIsHeroSubmitting] = useState(false);
   const { getToken } = useAuth();
   const modal = useActionModal();
 
@@ -182,12 +183,78 @@ function JourneyManager() {
         const token = await getToken();
         await api.delete(`/journey/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         fetchItems();
-      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+      } catch { modal.showAlert('Error', 'Delete failed'); }
     });
   };
 
+  const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      setIsHeroSubmitting(true);
+      const token = await getToken();
+      const data = new FormData();
+      data.append('semester', '0');
+      data.append('caption', 'Farewell Hero Image');
+      data.append('image', file);
+
+      if (heroItem) {
+        await api.put(`/journey/${heroItem._id}`, data, {
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+        });
+      } else {
+        await api.post('/journey', data, {
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+        });
+      }
+      fetchItems();
+    } catch (error: any) {
+      modal.showAlert('Error', error.response?.data?.message || 'Failed to upload hero image');
+    } finally {
+      setIsHeroSubmitting(false);
+    }
+  };
+
+  const heroItem = items.find(item => item.semester === 0);
+  const regularItems = items.filter(item => item.semester !== 0);
+
   return (
     <div className="space-y-8">
+      {/* Hero Image Section */}
+      <div className="bg-white/5 border border-primary/20 rounded-2xl p-6 shadow-[0_0_15px_rgba(250,204,21,0.05)]">
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h3 className="text-xl font-serif text-white flex items-center gap-2">Farewell Hero Image</h3>
+            <p className="text-gray-400 text-sm mt-1">This image appears at the top of the Archive page.</p>
+          </div>
+          {heroItem && (
+             <button onClick={() => handleDelete(heroItem._id)} className="px-3 py-1.5 text-xs text-red-500 border border-red-500/20 rounded hover:bg-red-500/10 transition-colors">
+               Remove
+             </button>
+          )}
+        </div>
+        
+        <div className="flex flex-col md:flex-row gap-6 items-center">
+          <div className="w-full md:w-64 aspect-[4/3] bg-black/40 rounded-xl overflow-hidden relative border border-white/10 flex items-center justify-center group">
+            {isHeroSubmitting ? (
+               <Loader2 className="animate-spin text-primary" size={32} />
+            ) : heroItem ? (
+               <img src={heroItem.imageUrl} alt="Hero" className="w-full h-full object-cover" />
+            ) : (
+               <ImageIcon className="text-gray-600" size={32} />
+            )}
+            
+            <label className={clsx("absolute inset-0 flex items-center justify-center bg-black/60 cursor-pointer transition-opacity", heroItem ? "opacity-0 group-hover:opacity-100" : "opacity-100")}>
+               <span className="bg-primary text-black px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform flex items-center gap-2">
+                 {isHeroSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
+                 {heroItem ? 'Replace Image' : 'Upload Image'}
+               </span>
+               <input type="file" accept="image/*" className="hidden" onChange={handleHeroUpload} disabled={isHeroSubmitting} />
+            </label>
+          </div>
+        </div>
+      </div>
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-serif text-white">Manage Journey</h2>
         <button
@@ -257,7 +324,7 @@ function JourneyManager() {
       </AnimatePresence>
 
       <div className="grid gap-4">
-        {loading ? <Loader2 className="animate-spin text-primary mx-auto" /> : items.map(item => (
+        {loading ? <Loader2 className="animate-spin text-primary mx-auto" /> : regularItems.map(item => (
           <div key={item._id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-colors">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-white/10 rounded-lg overflow-hidden">
@@ -274,7 +341,7 @@ function JourneyManager() {
             </div>
           </div>
         ))}
-        {!loading && items.length === 0 && <p className="text-center text-gray-600 italic">No journey entries yet.</p>}
+        {!loading && regularItems.length === 0 && <p className="text-center text-gray-600 italic">No journey entries yet.</p>}
       </div>
       <ActionModal {...modal.modalProps} />
     </div>
@@ -366,7 +433,7 @@ function YearbookManager() {
         const token = await getToken();
         await api.delete(`/yearbook/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         fetchItems();
-      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+      } catch { modal.showAlert('Error', 'Delete failed'); }
     });
   };
 
@@ -531,7 +598,7 @@ function VaultManager() {
         const token = await getToken();
         await api.delete(`/media/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         fetchItems();
-      } catch (error) { modal.showAlert('Error', 'Delete failed'); }
+      } catch { modal.showAlert('Error', 'Delete failed'); }
     });
   };
 

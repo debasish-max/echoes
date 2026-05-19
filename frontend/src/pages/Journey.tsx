@@ -37,27 +37,68 @@ export default function Journey() {
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 max-w-7xl mx-auto">
+      {/* Hero Section */}
+      <div className="flex flex-col md:flex-row items-center gap-12 mb-32 mt-10">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex-1 space-y-6"
+        >
+          <h1 className="text-5xl md:text-6xl font-serif font-bold leading-tight text-white">
+            A Goodbye Worth <br className="hidden md:block" /> Remembering
+          </h1>
+          <p className="text-gray-400 text-lg leading-relaxed max-w-xl">
+            As our journey comes to an end, we celebrate the final moments together. The decor, the performances, the emotions — we poured everything into making our own farewell something we'd never forget.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex-1 w-full"
+        >
+          {(() => {
+            const heroPhoto = photos.find(p => p.semester === 0);
+            return heroPhoto ? (
+              <div className="relative p-3 bg-white border-[8px] border-white rounded-sm shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 max-w-md ml-auto">
+                <img src={heroPhoto.imageUrl} alt="Farewell Day" className="w-full object-cover" />
+                <p className="text-center font-serif italic text-gray-800 text-sm mt-4 mb-1">
+                  Farewell day - we said goodbye, beautifully <span className="text-red-500">🎈</span>
+                </p>
+              </div>
+            ) : (
+              <div className="w-full max-w-md ml-auto aspect-[4/3] bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
+                <p className="text-gray-500 italic text-sm">hero image</p>
+              </div>
+            );
+          })()}
+        </motion.div>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-16"
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="mb-12 text-left"
       >
-        <h1 className="text-5xl font-serif font-bold mb-4 text-glow">The Journey</h1>
-        <p className="text-gray-400">Tracing our footprints through every semester</p>
+        <h1 className="text-6xl font-serif font-bold mb-4 text-white italic">The Archive</h1>
+        <p className="text-gray-400 text-lg max-w-2xl">
+          A cinematic collection of fleeting moments, frozen in time. From the first lecture to the final goodbye.
+        </p>
       </motion.div>
 
       {/* Filter Sidebar/Top-bar */}
-      <div className="flex flex-wrap justify-center gap-4 mb-12">
+      <div className="flex flex-wrap justify-start gap-4 mb-12">
         <button
           onClick={() => setActiveSem('all')}
           className={clsx(
             "px-6 py-2 rounded-full border transition-all duration-300",
-            activeSem === 'all' 
-              ? "bg-primary text-black border-primary font-semibold shadow-lg" 
+            activeSem === 'all'
+              ? "bg-primary text-black border-primary font-semibold shadow-lg"
               : "bg-surface text-gray-400 border-white/5 hover:border-primary/50"
           )}
         >
-          All
+          All Memories
         </button>
         {semesters.map(sem => (
           <button
@@ -65,8 +106,8 @@ export default function Journey() {
             onClick={() => setActiveSem(sem)}
             className={clsx(
               "px-6 py-2 rounded-full border transition-all duration-300",
-              activeSem === sem 
-                ? "bg-primary text-black border-primary font-semibold shadow-lg" 
+              activeSem === sem
+                ? "bg-primary text-black border-primary font-semibold shadow-lg"
                 : "bg-surface text-gray-400 border-white/5 hover:border-primary/50"
             )}
           >
@@ -81,9 +122,9 @@ export default function Journey() {
           <p className="text-gray-500 animate-pulse">Reliving memories...</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           <AnimatePresence mode="popLayout">
-            {photos.map((photo, index) => (
+            {photos.filter(p => p.semester !== 0).map((photo) => (
               <motion.div
                 layout
                 key={photo._id}
@@ -91,12 +132,12 @@ export default function Journey() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4 }}
-                className="group relative rounded-2xl overflow-hidden glass aspect-[4/5]"
+                className="group relative rounded-2xl overflow-hidden glass break-inside-avoid mb-6"
               >
-                <img 
-                  src={photo.imageUrl} 
-                  alt={photo.caption} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                <img
+                  src={photo.imageUrl}
+                  alt={photo.caption}
+                  className="w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                   <span className="text-primary text-xs font-bold uppercase tracking-widest mb-1">Semester {photo.semester}</span>

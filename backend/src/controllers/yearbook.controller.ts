@@ -3,7 +3,7 @@ import Yearbook from '../models/Yearbook.js';
 
 export const getYearbook = async (req: Request, res: Response) => {
   try {
-    const students = await Yearbook.find().sort({ name: 1 });
+    const students = await Yearbook.find();
     res.status(200).json(students);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching yearbook entries', error });
