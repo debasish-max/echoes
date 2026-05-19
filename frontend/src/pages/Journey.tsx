@@ -13,6 +13,40 @@ interface JourneyPhoto {
   caption: string;
 }
 
+function HeroSwiper({ photos }: { photos: JourneyPhoto[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (photos.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % photos.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [photos.length]);
+
+  return (
+    <div className="relative p-3 bg-white border-[8px] border-white rounded-sm shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 max-w-md ml-auto">
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
+        <AnimatePresence mode="popLayout">
+          <motion.img
+            key={currentIndex}
+            src={photos[currentIndex].imageUrl}
+            alt="Farewell Day"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </AnimatePresence>
+      </div>
+      <p className="text-center font-serif italic text-gray-800 text-sm mt-4 mb-1 relative z-10 bg-white">
+        Farewell day - we said goodbye, beautifully <span className="text-red-500">🎈</span>
+      </p>
+    </div>
+  );
+}
+
 export default function Journey() {
   const [activeSem, setActiveSem] = useState<number | 'all'>('all');
   const [photos, setPhotos] = useState<JourneyPhoto[]>([]);
@@ -58,19 +92,15 @@ export default function Journey() {
           className="flex-1 w-full"
         >
           {(() => {
-            const heroPhoto = photos.find(p => p.semester === 0);
-            return heroPhoto ? (
-              <div className="relative p-3 bg-white border-[8px] border-white rounded-sm shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 max-w-md ml-auto">
-                <img src={heroPhoto.imageUrl} alt="Farewell Day" className="w-full object-cover" />
-                <p className="text-center font-serif italic text-gray-800 text-sm mt-4 mb-1">
-                  Farewell day - we said goodbye, beautifully <span className="text-red-500">🎈</span>
-                </p>
-              </div>
-            ) : (
-              <div className="w-full max-w-md ml-auto aspect-[4/3] bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
-                <p className="text-gray-500 italic text-sm">hero image</p>
-              </div>
-            );
+            const heroPhotos = photos.filter(p => p.semester === 0);
+            if (heroPhotos.length === 0) {
+              return (
+                <div className="w-full max-w-md ml-auto aspect-[4/3] bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
+                  <p className="text-gray-500 italic text-sm">hero images</p>
+                </div>
+              );
+            }
+            return <HeroSwiper photos={heroPhotos} />;
           })()}
         </motion.div>
       </div>

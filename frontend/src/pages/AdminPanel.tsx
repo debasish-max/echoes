@@ -199,15 +199,9 @@ function JourneyManager() {
       data.append('caption', 'Farewell Hero Image');
       data.append('image', file);
 
-      if (heroItem) {
-        await api.put(`/journey/${heroItem._id}`, data, {
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
-        });
-      } else {
-        await api.post('/journey', data, {
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
-        });
-      }
+      await api.post('/journey', data, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
       fetchItems();
     } catch (error: any) {
       modal.showAlert('Error', error.response?.data?.message || 'Failed to upload hero image');
@@ -216,7 +210,7 @@ function JourneyManager() {
     }
   };
 
-  const heroItem = items.find(item => item.semester === 0);
+  const heroItems = items.filter(item => item.semester === 0);
   const regularItems = items.filter(item => item.semester !== 0);
 
   return (
@@ -225,33 +219,33 @@ function JourneyManager() {
       <div className="bg-white/5 border border-primary/20 rounded-2xl p-6 shadow-[0_0_15px_rgba(250,204,21,0.05)]">
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h3 className="text-xl font-serif text-white flex items-center gap-2">Farewell Hero Image</h3>
-            <p className="text-gray-400 text-sm mt-1">This image appears at the top of the Archive page.</p>
+            <h3 className="text-xl font-serif text-white flex items-center gap-2">Farewell Hero Images</h3>
+            <p className="text-gray-400 text-sm mt-1">These images appear at the top of the Archive page as an auto-swiping gallery.</p>
           </div>
-          {heroItem && (
-            <button onClick={() => handleDelete(heroItem._id)} className="px-3 py-1.5 text-xs text-red-500 border border-red-500/20 rounded hover:bg-red-500/10 transition-colors">
-              Remove
-            </button>
-          )}
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 items-center">
-          <div className="w-full md:w-64 aspect-[4/3] bg-black/40 rounded-xl overflow-hidden relative border border-white/10 flex items-center justify-center group">
+        <div className="flex flex-wrap gap-6 items-center">
+          {heroItems.map(item => (
+            <div key={item._id} className="relative w-full md:w-64 aspect-[4/3] bg-black/40 rounded-xl overflow-hidden border border-white/10 group">
+              <img src={item.imageUrl} alt="Hero" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <button onClick={() => handleDelete(item._id)} className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
+                  <Trash2 size={20} />
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <div className="w-full md:w-64 aspect-[4/3] bg-black/40 rounded-xl overflow-hidden relative border border-white/10 flex items-center justify-center group border-dashed hover:border-primary/50 transition-colors">
             {isHeroSubmitting ? (
               <Loader2 className="animate-spin text-primary" size={32} />
-            ) : heroItem ? (
-              <img src={heroItem.imageUrl} alt="Hero" className="w-full h-full object-cover" />
             ) : (
-              <ImageIcon className="text-gray-600" size={32} />
+              <div className="flex flex-col items-center">
+                <Upload className="text-gray-600 mb-2" size={32} />
+                <p className="text-gray-400 text-sm">Add Image</p>
+              </div>
             )}
-
-            <label className={clsx("absolute inset-0 flex items-center justify-center bg-black/60 cursor-pointer transition-opacity", heroItem ? "opacity-0 group-hover:opacity-100" : "opacity-100")}>
-              <span className="bg-primary text-black px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform flex items-center gap-2">
-                {isHeroSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
-                {heroItem ? 'Replace Image' : 'Upload Image'}
-              </span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleHeroUpload} disabled={isHeroSubmitting} />
-            </label>
+            <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleHeroUpload} disabled={isHeroSubmitting} />
           </div>
         </div>
       </div>
