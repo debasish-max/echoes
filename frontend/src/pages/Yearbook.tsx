@@ -48,8 +48,10 @@ export default function Yearbook() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-16"
       >
-        <h1 className="text-5xl font-serif font-bold mb-4 text-glow">The Yearbook</h1>
-        <p className="text-gray-400">Faces and stories that shaped Batch-26</p>
+        <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-glow italic">The Yearbook</h1>
+        <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
+          Every face holds a story, and every story shaped who we are. Browse through the profiles of Batch-26—the dreamers, the achievers, and the friends who made this journey truly unforgettable.
+        </p>
       </motion.div>
 
       {/* Search Bar */}
@@ -174,7 +176,7 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
         </div>
 
         {/* Right Column: All Info */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar bg-surface/30 p-8 md:p-12">
+        <div className="flex-1 overflow-y-auto no-scrollbar bg-surface/30 p-8 md:p-12">
           <div className="max-w-2xl mx-auto space-y-10">
             
             {/* Header Info */}

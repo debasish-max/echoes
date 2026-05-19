@@ -91,8 +91,10 @@ export default function MediaVault() {
         className="flex flex-col md:flex-row justify-between items-center mb-16 gap-8"
       >
         <div className="text-center md:text-left">
-          <h1 className="text-5xl font-serif font-bold mb-4 text-glow">Media Vault</h1>
-          <p className="text-gray-400">Collaborative memories shared by the batch</p>
+          <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-glow italic">Media Vault</h1>
+          <p className="text-gray-400 max-w-xl text-lg leading-relaxed">
+            A chaotic, beautiful, and unfiltered collection of our best moments. This collaborative vault is filled with candid snapshots, spontaneous adventures, and everything in between, contributed by the entire batch.
+          </p>
         </div>
         
         <button 
@@ -176,7 +178,7 @@ export default function MediaVault() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 10 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative max-w-5xl w-full h-full flex flex-col overflow-y-auto custom-scrollbar"
+              className="relative max-w-5xl w-full h-full flex flex-col overflow-y-auto no-scrollbar"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="m-auto flex flex-col items-center gap-6 w-full py-16 md:py-8">

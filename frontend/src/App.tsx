@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import Navbar from './components/layout/Navbar';
 import Home from './pages/Home';
 import Journey from './pages/Journey';
@@ -7,11 +8,24 @@ import MediaVault from './pages/MediaVault';
 import Wall from './pages/Wall';
 import AdminPanel from './pages/AdminPanel';
 import AdminRoute from './components/auth/AdminRoute';
+import Footer from './components/layout/Footer';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
-    <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-black">
+    <div className="min-h-screen flex flex-col bg-background text-white selection:bg-primary selection:text-black">
+      <ScrollToTop />
       <Navbar />
-      <main>
+      <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/journey" element={<Journey />} />
@@ -21,6 +35,7 @@ function App() {
           <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
         </Routes>
       </main>
+      <Footer />
       
       {/* Background Glows */}
       <div className="fixed top-0 -left-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0" />

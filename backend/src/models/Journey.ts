@@ -8,7 +8,7 @@ export interface IJourney extends Document {
 }
 
 const JourneySchema: Schema = new Schema({
-  semester: { type: Number, required: true, min: 1, max: 8 },
+  semester: { type: Number, required: true, min: 0, max: 8 },
   imageUrl: { type: String, required: true },
   caption: { type: String },
   createdAt: { type: Date, default: Date.now }
