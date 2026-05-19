@@ -51,7 +51,7 @@ export default function AdminPanel() {
         className="mb-12"
       >
         <h1 className="text-4xl font-serif font-bold mb-2 text-glow">Admin Panel</h1>
-        <p className="text-gray-400">Manage the Batch-26 digital archive</p>
+        <p className="text-gray-400">Manage the Echoes digital archive</p>
       </motion.div>
 
       {/* Admin Tabs */}
@@ -190,7 +190,7 @@ function JourneyManager() {
   const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     try {
       setIsHeroSubmitting(true);
       const token = await getToken();
@@ -229,28 +229,28 @@ function JourneyManager() {
             <p className="text-gray-400 text-sm mt-1">This image appears at the top of the Archive page.</p>
           </div>
           {heroItem && (
-             <button onClick={() => handleDelete(heroItem._id)} className="px-3 py-1.5 text-xs text-red-500 border border-red-500/20 rounded hover:bg-red-500/10 transition-colors">
-               Remove
-             </button>
+            <button onClick={() => handleDelete(heroItem._id)} className="px-3 py-1.5 text-xs text-red-500 border border-red-500/20 rounded hover:bg-red-500/10 transition-colors">
+              Remove
+            </button>
           )}
         </div>
-        
+
         <div className="flex flex-col md:flex-row gap-6 items-center">
           <div className="w-full md:w-64 aspect-[4/3] bg-black/40 rounded-xl overflow-hidden relative border border-white/10 flex items-center justify-center group">
             {isHeroSubmitting ? (
-               <Loader2 className="animate-spin text-primary" size={32} />
+              <Loader2 className="animate-spin text-primary" size={32} />
             ) : heroItem ? (
-               <img src={heroItem.imageUrl} alt="Hero" className="w-full h-full object-cover" />
+              <img src={heroItem.imageUrl} alt="Hero" className="w-full h-full object-cover" />
             ) : (
-               <ImageIcon className="text-gray-600" size={32} />
+              <ImageIcon className="text-gray-600" size={32} />
             )}
-            
+
             <label className={clsx("absolute inset-0 flex items-center justify-center bg-black/60 cursor-pointer transition-opacity", heroItem ? "opacity-0 group-hover:opacity-100" : "opacity-100")}>
-               <span className="bg-primary text-black px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform flex items-center gap-2">
-                 {isHeroSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
-                 {heroItem ? 'Replace Image' : 'Upload Image'}
-               </span>
-               <input type="file" accept="image/*" className="hidden" onChange={handleHeroUpload} disabled={isHeroSubmitting} />
+              <span className="bg-primary text-black px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform flex items-center gap-2">
+                {isHeroSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
+                {heroItem ? 'Replace Image' : 'Upload Image'}
+              </span>
+              <input type="file" accept="image/*" className="hidden" onChange={handleHeroUpload} disabled={isHeroSubmitting} />
             </label>
           </div>
         </div>

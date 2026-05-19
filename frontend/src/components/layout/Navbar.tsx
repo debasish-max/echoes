@@ -32,7 +32,7 @@ export default function Navbar() {
   }
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={clsx(
@@ -43,13 +43,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           <Link to="/" className="text-2xl font-serif font-bold text-primary text-glow">
-            Batch<span className="text-white">-26</span>
+            Echoes
           </Link>
-          
+
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <Link 
-                key={link.path} 
+              <Link
+                key={link.path}
                 to={link.path}
                 className={clsx(
                   "text-sm font-medium transition-colors hover:text-primary",
@@ -59,17 +59,17 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
-            
+
             <SignedIn>
               <div className="flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/5 border border-primary/30 shadow-lg shadow-primary/10">
                 <span className="text-xs font-bold text-primary uppercase tracking-tighter max-w-[120px] truncate">
                   {user?.fullName}
                 </span>
-                <UserButton 
-                  appearance={{ 
-                    elements: { 
-                      avatarBox: "w-8 h-8 border border-primary/50 shadow-glow" 
-                    } 
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-8 h-8 border border-primary/50 shadow-glow"
+                    }
                   }}
                 />
               </div>
@@ -93,7 +93,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           className="md:hidden bg-surface border-t border-white/5"
@@ -115,11 +115,11 @@ export default function Navbar() {
                   <span className="text-sm font-bold text-primary uppercase">
                     {user?.fullName}
                   </span>
-                  <UserButton 
-                    appearance={{ 
-                      elements: { 
-                        avatarBox: "w-10 h-10 border-2 border-primary shadow-glow" 
-                      } 
+                  <UserButton
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-10 h-10 border-2 border-primary shadow-glow"
+                      }
                     }}
                   />
                 </div>

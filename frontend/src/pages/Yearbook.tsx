@@ -37,7 +37,7 @@ export default function Yearbook() {
     fetchStudents();
   }, []);
 
-  const filteredStudents = students.filter(s => 
+  const filteredStudents = students.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -50,16 +50,16 @@ export default function Yearbook() {
       >
         <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-glow italic">The Yearbook</h1>
         <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-          Every face holds a story, and every story shaped who we are. Browse through the profiles of Batch-26—the dreamers, the achievers, and the friends who made this journey truly unforgettable.
+          Every face holds a story, and every story shaped who we are. Browse through the profiles of Echoes—the dreamers, the achievers, and the friends who made this journey truly unforgettable.
         </p>
       </motion.div>
 
       {/* Search Bar */}
       <div className="max-w-md mx-auto mb-12 relative group">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors duration-300" size={20} />
-        <input 
-          type="text" 
-          placeholder="Search by name..." 
+        <input
+          type="text"
+          placeholder="Search by name..."
           className="w-full bg-surface border border-white/5 rounded-full py-3 pl-12 pr-6 text-white focus:outline-none focus:border-primary/50 transition-all duration-300 shadow-xl"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -84,9 +84,9 @@ export default function Yearbook() {
             >
               {/* Image Wrapper */}
               <div className="relative aspect-square overflow-hidden bg-white/5">
-                <img 
-                  src={student.imageUrl} 
-                  alt={student.name} 
+                <img
+                  src={student.imageUrl}
+                  alt={student.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
@@ -98,7 +98,7 @@ export default function Yearbook() {
                   <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mt-1 line-clamp-1">{student.department}</span>
                 </div>
                 <p className="text-sm text-gray-400 leading-relaxed mb-4 line-clamp-3 italic break-words">"{student.bio}"</p>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {student.hobbies.slice(0, 3).map(hobby => (
                     <span key={hobby} className="text-[10px] uppercase tracking-widest px-2 py-1 bg-white/5 rounded-md border border-white/5 text-gray-300 truncate max-w-full">
@@ -116,9 +116,9 @@ export default function Yearbook() {
       {/* Cinematic Profile Modal */}
       <AnimatePresence>
         {selectedStudent && (
-          <StudentProfileModal 
-            student={selectedStudent} 
-            onClose={() => setSelectedStudent(null)} 
+          <StudentProfileModal
+            student={selectedStudent}
+            onClose={() => setSelectedStudent(null)}
           />
         )}
       </AnimatePresence>
@@ -159,7 +159,7 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
         className="glass w-full max-w-6xl h-full md:max-h-[85vh] overflow-hidden rounded-[2.5rem] border-primary/20 shadow-2xl relative flex flex-col md:flex-row"
         onClick={e => e.stopPropagation()}
       >
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 md:top-6 md:right-6 z-[120] p-3 bg-black/40 backdrop-blur-md hover:bg-black/60 rounded-full border border-white/10 text-white transition-all duration-300 shadow-xl"
         >
@@ -168,9 +168,9 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
 
         {/* Left Column: Portrait Only */}
         <div className="w-full md:w-[45%] h-[50vh] md:h-auto relative overflow-hidden">
-          <img 
-            src={student.imageUrl} 
-            alt={student.name} 
+          <img
+            src={student.imageUrl}
+            alt={student.name}
             className="absolute inset-0 w-full h-full object-cover"
           />
         </div>
@@ -178,18 +178,18 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
         {/* Right Column: All Info */}
         <div className="flex-1 overflow-y-auto no-scrollbar bg-surface/30 p-8 md:p-12">
           <div className="max-w-2xl mx-auto space-y-10">
-            
+
             {/* Header Info */}
             <header className="border-b border-white/5 pb-8">
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2 text-glow">{student.name}</h2>
               <p className="text-primary font-bold tracking-[0.2em] text-sm uppercase">{student.department}</p>
             </header>
-            
+
             {/* Bio Section */}
             <section>
               <div className="flex items-center gap-3 mb-6">
                 <Quote className="text-primary opacity-50" size={24} />
-                <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500">Your legacy from the batch</h3>
+                <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500">Your legacy from Echoes</h3>
               </div>
               <p className="text-xl font-serif italic text-white/90 leading-relaxed pl-8 border-l-2 border-primary/30">
                 "{student.bio}"
