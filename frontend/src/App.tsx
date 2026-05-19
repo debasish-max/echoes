@@ -1,12 +1,24 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
+import AdminRoute from './components/auth/AdminRoute';
 import Home from './pages/Home';
 import Journey from './pages/Journey';
 import Yearbook from './pages/Yearbook';
 import MediaVault from './pages/MediaVault';
 import Wall from './pages/Wall';
 import AdminPanel from './pages/AdminPanel';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   return (

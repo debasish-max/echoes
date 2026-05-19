@@ -48,8 +48,8 @@ export default function Home() {
         >
           {/* Subtle Glow Behind Text */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[200px] bg-primary/20 blur-[100px] rounded-full z-0 pointer-events-none" />
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
@@ -61,16 +61,16 @@ export default function Home() {
           <h1 className="text-6xl md:text-8xl font-serif font-bold tracking-tight mb-8 relative z-10 text-white">
             Batch <span className="font-serif italic font-normal text-white drop-shadow-lg">2023–26</span>
           </h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
             className="max-w-2xl mx-auto text-sm md:text-base text-gray-400 font-light mb-16 tracking-wide leading-relaxed"
           >
-            Four years of laughter, unforgettable days, and lessons learned. Join us as we look back on the moments that defined us.
+            Three years of laughter, unforgettable days, and lessons learned. Join us as we look back on the moments that defined us.
           </motion.p>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,23 +99,23 @@ export default function Home() {
       {/* Intro Section / Nostalgia Hook */}
       <section className="py-32 px-4 max-w-7xl mx-auto border-t border-white/5 relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-32 bg-gradient-to-b from-white/10 to-transparent" />
-        
+
         <motion.div
-           initial={{ opacity: 0, y: 40 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           transition={{ duration: 1 }}
-           viewport={{ once: true }}
-           className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-10 relative z-10"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          viewport={{ once: true }}
+          className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-10 relative z-10"
         >
           <div className="max-w-3xl">
-             <span className="text-primary tracking-[0.4em] uppercase text-xs font-bold mb-6 block">The Echoes Archive</span>
-             <h2 className="text-4xl md:text-6xl font-serif text-white leading-tight">
-                More than just memories. <br />
-                <span className="text-gray-500 italic">A legacy we leave behind.</span>
-             </h2>
+            <span className="text-primary tracking-[0.4em] uppercase text-xs font-bold mb-6 block">The Echoes Archive</span>
+            <h2 className="text-4xl md:text-6xl font-serif text-white leading-tight">
+              More than just memories. <br />
+              <span className="text-gray-500 italic">A legacy we leave behind.</span>
+            </h2>
           </div>
           <p className="text-gray-400 max-w-md text-sm md:text-base leading-relaxed border-l border-primary/30 pl-6">
-            Four years vanished in the blink of an eye. This digital time capsule was built to ensure the laughter, the struggles, and the unbreakable bonds of Batch-26 are never forgotten.
+            Three years vanished in the blink of an eye. This digital time capsule was built to ensure the laughter, the struggles, and the unbreakable bonds of Batch-26 are never forgotten.
           </p>
         </motion.div>
 
@@ -132,16 +132,16 @@ export default function Home() {
               >
                 <Link to={feat.link} className="group relative h-[380px] rounded-[2rem] overflow-hidden bg-white/[0.02] border border-white/5 hover:border-primary/30 transition-all duration-500 block">
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/90 z-10" />
-                  
+
                   {/* Subtle animated background gradient */}
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  
+
                   <div className="absolute inset-0 p-8 flex flex-col justify-between z-20">
                     <div className="flex justify-between items-start">
-                       <span className="text-6xl font-serif text-white/5 group-hover:text-primary/10 transition-colors duration-500">{feat.num}</span>
-                       <div className="p-3 bg-white/5 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-primary/20 group-hover:border-primary/50 transition-all duration-500">
-                         <Icon className="text-gray-400 group-hover:text-primary transition-colors duration-500" size={20} />
-                       </div>
+                      <span className="text-6xl font-serif text-white/5 group-hover:text-primary/10 transition-colors duration-500">{feat.num}</span>
+                      <div className="p-3 bg-white/5 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-primary/20 group-hover:border-primary/50 transition-all duration-500">
+                        <Icon className="text-gray-400 group-hover:text-primary transition-colors duration-500" size={20} />
+                      </div>
                     </div>
                     <div>
                       <h3 className="text-2xl font-serif text-white mb-3 group-hover:text-primary transition-colors duration-300">{feat.title}</h3>
