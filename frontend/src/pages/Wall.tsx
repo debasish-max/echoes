@@ -49,7 +49,7 @@ export default function Wall() {
   const [newMessage, setNewMessage] = useState('');
   const [posting, setPosting] = useState(false);
 
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const { getToken } = useAuth();
   const isAdmin = user?.publicMetadata?.role === 'admin';
   const modal = useActionModal();
@@ -120,7 +120,7 @@ export default function Wall() {
       </motion.div>
 
       {/* Message Input */}
-      {isAdmin && (
+      {isSignedIn ? (
         <motion.form 
           onSubmit={handlePost}
           initial={{ opacity: 0, y: 20 }}
@@ -148,6 +148,10 @@ export default function Wall() {
             </button>
           </div>
         </motion.form>
+      ) : (
+        <div className="text-center py-6 bg-white/5 border border-white/5 rounded-3xl max-w-3xl mx-auto mb-16">
+          <p className="text-gray-400 text-sm">Please sign in to post a message anonymously on the wall.</p>
+        </div>
       )}
 
       {/* Messages Grid - 4 column Masonry layout */}
