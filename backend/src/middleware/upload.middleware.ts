@@ -3,7 +3,19 @@ import cloudinary from '../config/cloudinary.js';
 
 // Configure memory storage to handle the file as a buffer
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB limit (modern mobile photos can be large)
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'));
+    }
+  }
+});
 
 /**
  * Custom function to upload a buffer to Cloudinary

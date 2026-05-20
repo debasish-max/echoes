@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Instagram, Search, Loader2, Sparkles, Linkedin, X, Quote } from 'lucide-react';
+import { Instagram, Search, Sparkles, Linkedin, X, Quote } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 interface Student {
   _id: string;
@@ -67,10 +68,7 @@ export default function Yearbook() {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <Loader2 className="animate-spin text-primary" size={48} />
-          <p className="text-gray-500 animate-pulse">Retrieving the class directory...</p>
-        </div>
+        <LoadingSpinner message="Retrieving the class directory..." />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {filteredStudents.map((student, index) => (
@@ -141,6 +139,13 @@ export default function Yearbook() {
 }
 
 function StudentProfileModal({ student, onClose }: { student: Student; onClose: () => void }) {
+  useEffect(() => {
+    // Lock scroll on mobile/desktop when modal is open
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   return (
     <motion.div
@@ -166,8 +171,8 @@ function StudentProfileModal({ student, onClose }: { student: Student; onClose: 
           <X size={20} />
         </button>
 
-        {/* Left Column: Portrait Only */}
-        <div className="w-full md:w-[45%] h-[50vh] md:h-auto relative overflow-hidden">
+        {/* Left Column: Portrait Only - Reduced height on mobile to leave space for bio */}
+        <div className="w-full md:w-[45%] h-[35vh] md:h-auto relative overflow-hidden flex-shrink-0">
           <img
             src={student.imageUrl}
             alt={student.name}

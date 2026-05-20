@@ -3,6 +3,7 @@ import { Upload, X, ZoomIn, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useAuth } from '@clerk/clerk-react';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 interface MediaItem {
   _id: string;
@@ -40,6 +41,17 @@ export default function MediaVault() {
   useEffect(() => {
     fetchMedia();
   }, []);
+
+  useEffect(() => {
+    if (selectedPhoto || uploadModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedPhoto, uploadModal]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -107,10 +119,7 @@ export default function MediaVault() {
       </motion.div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <Loader2 className="animate-spin text-primary" size={48} />
-          <p className="text-gray-500 animate-pulse">Unlocking the vault...</p>
-        </div>
+        <LoadingSpinner message="Unlocking the vault..." />
       ) : (
         <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-8 space-y-8">
           <AnimatePresence mode="popLayout">
@@ -132,22 +141,18 @@ export default function MediaVault() {
                   style={{ minHeight: '200px' }}
                 />
                 
-                {/* Modern Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
-                   <motion.div 
-                     initial={{ y: 20, opacity: 0 }}
-                     whileHover={{ y: 0, opacity: 1 }}
-                     className="space-y-3"
-                   >
-                     <p className="text-primary font-bold tracking-[0.2em] text-[10px] uppercase">A Shared Moment</p>
-                     <h3 className="text-white font-serif text-xl leading-tight">{photo.caption}</h3>
+                {/* Modern Overlay - Fully visible on mobile touch screen, hover effect on desktop */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6 md:p-8">
+                   <div className="space-y-2 md:space-y-3">
+                     <p className="text-primary font-bold tracking-[0.2em] text-[8px] md:text-[10px] uppercase">A Shared Moment</p>
+                     <h3 className="text-white font-serif text-base md:text-xl leading-tight line-clamp-2">{photo.caption}</h3>
                      
-                     <div className="flex justify-between items-center pt-4 border-t border-white/10">
-                        <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-widest">
-                          Expand <ZoomIn size={12} />
+                     <div className="flex justify-between items-center pt-2 md:pt-4 border-t border-white/10">
+                        <div className="flex items-center gap-2 text-primary font-bold text-[8px] md:text-[10px] uppercase tracking-widest">
+                           Expand <ZoomIn size={12} />
                         </div>
                      </div>
-                   </motion.div>
+                   </div>
                 </div>
 
                 {/* Subtle border shine effect */}

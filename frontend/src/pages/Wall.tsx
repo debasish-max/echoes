@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Trash2 } from 'lucide-react';
+import { Send, Trash2, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import ActionModal from '../components/ui/ActionModal';
 import type { ActionModalProps } from '../components/ui/ActionModal';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 function useActionModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -155,85 +156,89 @@ export default function Wall() {
       )}
 
       {/* Messages Grid - 4 column Masonry layout */}
-      <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
-        <AnimatePresence mode="popLayout">
-          {messages.map((msg, index) => {
-            const rotations = [-1.5, 1.2, -0.8, 1.5, 0.9, -1.2, 0.6, -1.1];
-            const rot = rotations[index % rotations.length];
-            return (
-              <div
-                key={msg._id}
-                className="masonry-item pt-8 mb-8 group"
-              >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.4 }}
-                  className="relative group italic"
-                  style={{ transform: 'translateZ(0)' }}
+      {loading ? (
+        <LoadingSpinner message="Retrieving messages from the wall..." />
+      ) : (
+        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
+          <AnimatePresence mode="popLayout">
+            {messages.map((msg, index) => {
+              const rotations = [-1.5, 1.2, -0.8, 1.5, 0.9, -1.2, 0.6, -1.1];
+              const rot = rotations[index % rotations.length];
+              return (
+                <div
+                  key={msg._id}
+                  className="masonry-item pt-8 mb-8 group"
                 >
-                  {/* Tape - Minimalist design to avoid artifacts */}
-                  <div
-                    className="absolute -top-1 left-1/2 -translate-x-1/2 w-10 h-5 bg-[#facc15] shadow-md pointer-events-none"
-                    style={{ zIndex: 10, borderRadius: '1px' }}
-                  />
-
-                  {/* Stacked paper layers */}
-                  <div className="relative">
-                    <div className="absolute"
-                      style={{ 
-                        bottom: '-6px', left: '-3px', right: '-3px', top: '24px',
-                        background: '#0a0a0a', borderRadius: '2px', zIndex: 0 }} />
-                    <div className="absolute"
-                      style={{ 
-                        bottom: '-3px', left: '-1px', right: '-1px', top: '12px',
-                        background: '#121212', borderRadius: '2px', zIndex: 1 }} />
-
-                    {/* Main note */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.4 }}
+                    className="relative group italic"
+                    style={{ transform: 'translateZ(0)' }}
+                  >
+                    {/* Tape - Minimalist design to avoid artifacts */}
                     <div
-                      className="relative p-6 flex flex-col transition-transform duration-300 group-hover:-translate-y-1"
-                      style={{
-                        background: '#1a1a1a',
-                        border: '1.5px solid #facc15', // Solid yellow, no transparency
-                        borderRadius: '2px',
-                        minHeight: '170px',
-                        zIndex: 2,
-                        transform: `rotate(${rot}deg)`,
-                      }}
-                    >
-                      {/* Decorative brackets */}
-                      <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-primary/40" />
-                      <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-primary/40" />
-                      <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-primary/40" />
-                      <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-primary/40" />
-
-                      <p className="flex-1 text-[17px] leading-relaxed mt-1 mb-6 px-1 text-white/90"
-                        style={{ fontFamily: 'Georgia, serif' }}>
-                        {msg.text}
-                      </p>
-
-                      <div className="flex justify-between items-center mt-auto border-t border-white/10 pt-4">
-                        <span className="text-[10px] font-mono text-primary/60 tracking-widest">
-                          {new Date(msg.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </span>
-                        {isAdmin && (
-                          <button 
-                            onClick={() => handleDelete(msg._id)}
-                            className="p-1 text-red-500/40 hover:text-red-500 transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        )}
+                      className="absolute -top-1 left-1/2 -translate-x-1/2 w-10 h-5 bg-[#facc15] shadow-md pointer-events-none"
+                      style={{ zIndex: 10, borderRadius: '1px' }}
+                    />
+  
+                    {/* Stacked paper layers */}
+                    <div className="relative">
+                      <div className="absolute"
+                        style={{ 
+                          bottom: '-6px', left: '-3px', right: '-3px', top: '24px',
+                          background: '#0a0a0a', borderRadius: '2px', zIndex: 0 }} />
+                      <div className="absolute"
+                        style={{ 
+                          bottom: '-3px', left: '-1px', right: '-1px', top: '12px',
+                          background: '#121212', borderRadius: '2px', zIndex: 1 }} />
+  
+                      {/* Main note */}
+                      <div
+                        className="relative p-6 flex flex-col transition-transform duration-300 group-hover:-translate-y-1"
+                        style={{
+                          background: '#1a1a1a',
+                          border: '1.5px solid #facc15', // Solid yellow, no transparency
+                          borderRadius: '2px',
+                          minHeight: '170px',
+                          zIndex: 2,
+                          transform: `rotate(${rot}deg)`,
+                        }}
+                      >
+                        {/* Decorative brackets */}
+                        <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-primary/40" />
+                        <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-primary/40" />
+                        <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-primary/40" />
+                        <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-primary/40" />
+  
+                        <p className="flex-1 text-[17px] leading-relaxed mt-1 mb-6 px-1 text-white/90"
+                          style={{ fontFamily: 'Georgia, serif' }}>
+                          {msg.text}
+                        </p>
+  
+                        <div className="flex justify-between items-center mt-auto border-t border-white/10 pt-4">
+                          <span className="text-[10px] font-mono text-primary/60 tracking-widest">
+                            {new Date(msg.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </span>
+                          {isAdmin && (
+                            <button 
+                              onClick={() => handleDelete(msg._id)}
+                              className="p-1 text-red-500/40 hover:text-red-500 transition-colors"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              </div>
-            );
-          })}
-        </AnimatePresence>
-      </div>
+                  </motion.div>
+                </div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      )}
 
       {!loading && messages.length === 0 && (
         <div className="text-center py-20">

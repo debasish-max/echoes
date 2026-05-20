@@ -39,15 +39,24 @@ app.use('/api/', limiter);
 
 // CORS configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',') 
-  : ['http://localhost:5173', 'http://localhost:3000'];
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim().replace(/\/$/, '')) 
+  : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    const cleanOrigin = origin.trim().replace(/\/$/, '');
+    const isAllowed = allowedOrigins.includes(cleanOrigin) || 
+                      cleanOrigin.endsWith('.onrender.com') ||
+                      /^http:\/\/localhost:\d+$/.test(cleanOrigin);
+
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error(`Not allowed by CORS: ${origin}`));
     }
   },
   credentials: true
@@ -131,6 +140,18 @@ app.use((req, res) => {
 // Global Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   logger.error(err, 'GLOBAL ERROR');
+  
+  if (err.name === 'MulterError') {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File is too large. Maximum size is 10MB.' });
+    }
+    return res.status(400).json({ message: `Upload error: ${err.message}` });
+  }
+
+  if (err.message === 'Only image files are allowed!') {
+    return res.status(400).json({ message: err.message });
+  }
+
   res.status(500).json({ 
     message: 'Internal Server Error', 
     error: process.env.NODE_ENV === 'production' ? 'An unexpected error occurred' : err.message 

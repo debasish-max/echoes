@@ -6,6 +6,7 @@ import api from '../lib/api';
 import { useAuth } from '@clerk/clerk-react';
 import ActionModal from '../components/ui/ActionModal';
 import type { ActionModalProps } from '../components/ui/ActionModal';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 function useActionModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -318,7 +319,7 @@ function JourneyManager() {
       </AnimatePresence>
 
       <div className="grid gap-4">
-        {loading ? <Loader2 className="animate-spin text-primary mx-auto" /> : regularItems.map(item => (
+        {loading ? <LoadingSpinner message="Loading journey items..." /> : regularItems.map(item => (
           <div key={item._id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-colors">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-white/10 rounded-lg overflow-hidden">
@@ -498,7 +499,7 @@ function YearbookManager() {
       </AnimatePresence>
 
       <div className="grid gap-4">
-        {loading ? <Loader2 className="animate-spin text-primary mx-auto" /> : items.map(item => (
+        {loading ? <LoadingSpinner message="Loading students..." /> : items.map(item => (
           <div key={item._id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/10 rounded-full overflow-hidden">
@@ -661,7 +662,7 @@ function VaultManager() {
       </AnimatePresence>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {loading ? <Loader2 className="animate-spin text-primary mx-auto col-span-full" /> : items.map(item => (
+        {loading ? <div className="col-span-full"><LoadingSpinner message="Loading vault items..." /></div> : items.map(item => (
           <div key={item._id} className="relative aspect-square rounded-xl overflow-hidden group">
             <img src={item.imageUrl} alt="media" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">

@@ -126,7 +126,10 @@ export default function Navbar() {
               </SignedIn>
               <SignedOut>
                 <SignInButton mode="modal">
-                  <button className="w-full text-left py-2 text-primary font-medium">
+                  <button 
+                    onClick={() => setIsOpen(false)}
+                    className="w-full text-left py-2 text-primary font-medium"
+                  >
                     Sign In
                   </button>
                 </SignInButton>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, CameraOff } from 'lucide-react';
+import { CameraOff } from 'lucide-react';
 import clsx from 'clsx';
 import api from '../lib/api';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 const semesters = [1, 2, 3, 4, 5, 6];
 
@@ -152,10 +153,7 @@ export default function Journey() {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <Loader2 className="animate-spin text-primary" size={48} />
-          <p className="text-gray-500 animate-pulse">Reliving memories...</p>
-        </div>
+        <LoadingSpinner message="Reliving memories..." />
       ) : (
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           <AnimatePresence mode="popLayout">
